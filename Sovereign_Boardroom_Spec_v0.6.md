@@ -4,7 +4,7 @@ Firmware Module Specification
 
 *k-of-N Geographically Distributed Multi-Signature Treasury*
 
-Version: 0.3 Draft
+Version: 0.6 Draft
 
 Classification: Confidential --- Internal Technical
 
