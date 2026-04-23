@@ -1,5 +1,3 @@
-**WESATOSHIS LABS**
-
 **Sovereign Boardroom**
 
 Firmware Module Specification
