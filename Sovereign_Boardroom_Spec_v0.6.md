@@ -385,7 +385,7 @@ The private key never exists on a network-connected general-purpose computer at 
 
 **6.1 Firmware integrity**
 
-- All firmware updates must be signed with Wesatoshis\' release signing key.
+- All firmware updates must be signed with SB GitHub release signing key.
 
 - The card must verify the firmware signature against a public key burned into the secure element during manufacture before applying any update.
 
@@ -397,9 +397,9 @@ The private key never exists on a network-connected general-purpose computer at 
 
 - Private keys are derived in RAM during an active signing session only. They are never written to the SD card, never logged, and never transmitted. The firmware must zero all key material from RAM immediately after the signing operation completes and unconditionally when the session ends.
 
-- The XPUB export (Treasury Invite) contains only public key material. No private or seed material is derivable from it.
+- The XPUB export (Treasury)contains only public key material. No private or seed material is derivable from it.
 
-- The treasury descriptor contains only public key material.
+- The Treasury descriptor contains only public key material.
 
 - PIN entry is required before any treasury operation. The PIN must be rate-limited with an exponential backoff.
 
@@ -423,7 +423,7 @@ The private key never exists on a network-connected general-purpose computer at 
 
 - All connections from the card to Nostr relays must use TLS 1.2 or higher.
 
-- The card must validate the TLS certificate of the relay endpoint. Certificate pinning is recommended for the default Wesatoshis-hosted relay.
+- The card must validate the TLS certificate of the relay endpoint. Certificate pinning is recommended for the default GitHub-hosted relay.
 
 - The treasury Nostr keypair must be derived deterministically from the treasury descriptor hash using HKDF, so all all N devices independently arrive at the same keypair without out-of-band key exchange.
 
