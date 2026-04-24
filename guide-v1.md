@@ -9,13 +9,13 @@
 
 **The SBT** (Sovereign Boardroom Terminal) is a small handheld device with a touchscreen. It has no software installed. It has no memory between sessions. It is a screen and a processor — nothing more. You can buy one from any electronics supplier or from our shop.
 
-**The SBKey** is your key to the Boardroom. It is a small metal fob on your keyring. Inside it, permanently sealed, is a microSD card carrying your encrypted credentials. Without your SBKey, you cannot participate in any Boardroom decision. Without your PIN, your SBKey is a blank piece of hardware.
+**The SBKey** is your key to the Boardroom. It is a small metal fob on your keyring. Inside it, permanently sealed, is a microSD card carrying your encrypted credentials. Without your SBKey, you cannot participate in any Boardroom decision. Without your PIN, your SBKey is unusable.
 
 ---
 
 ## What the Sovereign Boardroom is
 
-A shared treasury controlled jointly by a defined group of members. No single member can move funds alone. Transactions require a minimum number of members to agree and sign — a number set by the group at the founding ceremony and fixed permanently thereafter.
+A shared Bitcoin (BTC) treasury controlled jointly by a defined group of members. No single member can move funds alone. Transactions require a minimum number of members to agree and sign — a number set by the group at the founding ceremony and fixed permanently thereafter.
 
 There is no company in the middle. No account to log into. No app that can be updated without your knowledge. No third party who can freeze, delay, or monitor your transactions. The Boardroom exists on the Bitcoin network and is governed entirely by the keys your members hold.
 
@@ -30,8 +30,11 @@ The group meets — physically or across verified devices — to establish the B
 During the ceremony:
 
 - The group agrees on the signing threshold. If there are seven members, the group might require four signatures to authorise any transaction. This number is permanent.
-- Each member's SBKey is generated independently. No member sees another member's key. No key ever leaves its SBKey.
+
+- Each member's SBKey is generated independently. No member sees another member's key. No private key ever leaves its SBKey.
+
 - A shared treasury address is created from the combined public keys of all members. Funds sent to this address can only be moved with the required number of signatures.
+
 - Each member leaves with their SBKey, their PIN, and the treasury address.
 
 After the ceremony, no single person — including whoever organised it — has any privileged access. The group governs by consensus. The software has no concept of administrator.
