@@ -4,7 +4,7 @@ Firmware Module Specification
 
 *k-of-N Geographically Distributed Multi-Signature Treasury*
 
-Version: 0.8 Draft
+Version: 0.9 Draft
 
 Classification: Confidential --- Internal Technical
 
@@ -14,13 +14,15 @@ Target hardware: ESP32-S3 device with microSD slot and Wi-Fi (reference: Wavesha
 
 **1. Purpose and scope**
 
-This document specifies the Sovereign Boardroom firmware --- an open-source, hardware-agnostic Bitcoin multi-signature treasury tool distributed as a bootable microSD card image. The firmware runs on any compatible ESP32-S3 device with a display, microSD slot, and Wi-Fi. The reference development hardware is the Waveshare ESP32-S3-LCD-1.47 board. Future integration with the Wesatoshis Card is planned but not required for the proof of concept or version 1.0 release.
+This document specifies the Sovereign Boardroom firmware --- an open-source, hardware-agnostic Bitcoin multi-signature treasury tool distributed as a bootable microSD card image. The firmware runs on any compatible ESP32-S3 device with a display, microSD slot, and Wi-Fi. The reference development hardware is the Waveshare ESP32-S3-LCD-1.47 board. 
+
+Future integration with the Wesatoshis Card is planned but not required for the proof of concept or version 1.0 release.
 
 The confirmed aim of this specification is:
 
 > *To construct an open-source, hardware-agnostic multi-signature Bitcoin treasury platform that allows k-of-N device holders in different geographic locations to build, coordinate, and sign Bitcoin transactions using only their Sovereign Boardroom devices --- a microSD card inserted into any compatible ESP32-S3 hardware --- and a Nostr-compatible messaging application on their mobile phones. The threshold k and the total signer count N are configured by any one device holder during the one-time setup ceremony and are immutable for the lifetime of that treasury. Any device holder may initiate a transaction at any time. The firmware assigns no privileged roles. Governance decisions --- who proposes transactions, who holds which device --- are made outside the device by the organisation.*
 
-This module is scoped to Bitcoin mainnet transactions using P2WSH (native SegWit) multi-signature outputs. Rootstock (RSK) and Lightning Network extensions are out of scope for version 1.0.
+This module is scoped to Bitcoin mainnet transactions using P2WSH (native SegWit) multi-signature outputs.
 
 **2. Context and design philosophy**
 
@@ -76,7 +78,7 @@ The module must make the complexity of multi-signature coordination completely i
 
 **3. System architecture**
 
-The Sovereign Boardroom is a bootable microSD card image. The hardware is a commodity vessel. All firmware, cryptographic state, and treasury data reside on the SD card. Inserting the card into any compatible ESP32-S3 device and applying power starts the tool. This section describes the SD card layout, the hardware configuration model, the session lifecycle, and the firmware hash verification mechanism.
+The Sovereign Boardroom is a bootable microSD card image. The hardware is a standard off the shelf device. All firmware, cryptographic state, and treasury data reside on the SD card. Inserting the card into any compatible ESP32-S3 device and applying power starts the firmware. This section describes the SD card layout, the hardware configuration model, the session lifecycle, and the firmware hash verification mechanism.
 
 **3.1 SD card layout**
 
@@ -126,11 +128,17 @@ The SD card is formatted FAT32 and contains the following directory structure. N
 
 > Transaction IDs of all broadcast transactions. Used for replay protection. Append-only.
 
-/session/broadcast_log.json is the last file listed in section 3.1. Two new files are added here.
+/session/broadcast_log.json
 
-/session/utxo_cache.json stores the current set of unspent transaction outputs at the treasury address, updated each session during the SPV sync. Used to compute the displayed balance and to detect new incoming transactions. If absent the device performs a full scan from genesis on next connection.
+> The last file listed in section 3.1. Two new files are added here.
 
-/treasury/address_index.json stores a single integer --- the index of the next unused receiving address in the treasury\'s derivation sequence. Starts at 0. Increments each time the Receive screen is opened and a new address is displayed. Never decremented. Each device holds its own independent counter. Two devices may display different indices --- this is correct and expected. All derived addresses are valid receiving addresses for the treasury regardless of which device generated them.
+/session/utxo_cache.json 
+
+> stores the current set of unspent transaction outputs at the treasury address, updated each session during the SPV sync. Used to compute the displayed balance and to detect new incoming transactions. If absent the device performs a full scan from genesis on next connection.
+
+/treasury/address_index.json 
+
+> stores a single integer --- the index of the next unused receiving address in the treasury\'s derivation sequence. Starts at 0. Increments each time the Receive screen is opened and a new address is displayed. Never decremented. Each device holds its own independent counter. Two devices may display different indices --- this is correct and expected. All derived addresses are valid receiving addresses for the treasury regardless of which device generated them.
 
 Remove the SD card and the hardware device is blank. All treasury state is on the card. The card without the PIN is useless. The PIN without the card is useless.
 
