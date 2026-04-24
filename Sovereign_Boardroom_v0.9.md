@@ -207,7 +207,7 @@ The Sovereign Boardroom firmware is published on GitHub under an open-source lic
 | Key Manager (existing) | Holds the card\'s BIP-32 HD seed in the secure element. Provides signing operations. Never exports private key material. |
 | UI Layer               | Card screen and input handling. Renders treasury-specific flows: Setup, Receive, Dashboard, Pending, Sign, Broadcast.    |
 
-**3.2 Communication model**
+**3.7 Communication model**
 
 All inter-card coordination is asynchronous and relay-mediated. Cards do not communicate directly with each other. The Nostr relay acts as an encrypted shared inbox.
 
@@ -221,7 +221,7 @@ All inter-card coordination is asynchronous and relay-mediated. Cards do not com
 
 - Two relay endpoints are required at minimum. If the primary is unreachable, the card falls back automatically.
 
-**3.3 Bitcoin standards compliance**
+**3.8 Bitcoin standards compliance**
 
 |              |                                                                       |
 |--------------|-----------------------------------------------------------------------|
