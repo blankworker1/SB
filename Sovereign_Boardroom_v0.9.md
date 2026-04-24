@@ -236,7 +236,7 @@ All inter-card coordination is asynchronous and relay-mediated. Cards do not com
 
 **4. Core workflows**
 
-**4.1 Phase 1 --- Treasury setup (one-time)**
+**Phase 1 --- Treasury setup (one-time)**
 
 This phase is completed once, when the treasury is first created. It is repeated only when the treasury structure changes --- a new keyholder, a different threshold, or a deliberate migration to a new address. All N device holders should be present or reachable before the ceremony begins.
 
@@ -307,9 +307,25 @@ After the address ceremony is complete, the device displays a mandatory reminder
 
 The backup is made using Win32DiskImager, the same free tool used to write the original firmware image. The process creates a sector-level clone --- a bit-for-bit identical copy of the card including the encrypted key share. The clone is protected by the same PIN as the original. An attacker who obtains the backup card without the PIN cannot decrypt the seed. The backup does not create a new key share or a new participant in the treasury. It is the same key share on a second physical card, held in a separate location.
 
+The cloning process must be followed in the exact sequence below. It is designed so that the original card is never in the laptop at the same time the Write function is active. Deviating from this sequence risks overwriting the original card irreversibly.
 
+**Step 4.1** --- Read: Insert the original card into the laptop using a microSD USB adapter. Open Win32DiskImager. In the Device dropdown, verify the drive letter matches the SD card --- not any other drive. Select Read. Save the image file to the desktop as my_treasury_backup.img. Wait for completion. Click Exit.
 
-**4.2 Phase 2 --- Transaction proposal**
+**Step 4.2** --- Remove the original card immediately after the Read completes. Take it out of the laptop before opening Win32DiskImager again. Hold it in your hand. The original card must not be in the laptop during the Write step. This is the most important step in the process.
+
+**Step 4.3** --- Write: Insert a blank backup microSD card. Open Win32DiskImager. In the Device dropdown, verify the drive letter matches the blank card. Select my_treasury_backup.img as the image file. Click Write. Win32DiskImager will warn that all data on the selected drive will be overwritten --- confirm only after verifying the drive letter is correct and the original card is not in the laptop.
+
+**Step 4.4** --- Verify the backup card. Remove the backup card. Insert it into the Sovereign Boardroom device, apply power, and enter the PIN. The treasury should load correctly and show the treasury address. If it does not load, repeat from Step 4.1 with the original card.
+
+**Step 4.5** --- Delete the image file. Delete my_treasury_backup.img from the laptop. This file contains the encrypted seed and must not be kept, backed up to cloud storage, emailed, or shared. The firmware image downloaded from the Sovereign Boardroom website is public and may be kept. The image file created in Step 4.1 is private and must be deleted immediately after the backup card is verified.
+
+**Step 4.6** --- Store the backup card in a separate location. The backup card must be stored separately from the original card and from the device. A fireproof safe at a different address, a safety deposit box, or any secure location the holder controls. Never store the backup card with the PIN written on or near it.
+
+The device requires the holder to tap a confirmation button labelled "I have made a backup" before the treasury is marked active. This is the final gate before the treasury address can receive funds. The firmware cannot verify that a backup was made --- this is the holder's personal commitment. No funds should be deposited until every device holder has completed this step.
+
+Loss of a key share without a backup does not necessarily mean loss of treasury funds. If the remaining N-1 holders can still form a quorum of k signatures, they can move funds to a new treasury address. The correct response to a lost card with no backup is: form a quorum, move the funds, conduct a new setup ceremony with a replacement device holder. This is why choosing a k threshold that leaves headroom --- 3-of-5 rather than 5-of-5 --- is a resilience decision as much as a governance one.
+
+**Phase 2 --- Transaction proposal**
 
 Any device holder may propose a transaction at any time. The firmware assigns no designated proposer. Which device holder initiates a given transaction is an out-of-device decision made by the organisation.
 
@@ -329,7 +345,7 @@ Any device holder may propose a transaction at any time. The firmware assigns no
 
 > *The device holder who initiates the transaction should communicate the details to the other N-1 holders via a separate human channel (Nostr group message, voice call) before others sign. The firmware cannot enforce this policy. It is the shared responsibility of all N device holders to verify transaction details out-of-band before signing. No device holder should sign a transaction they were not expecting or have not independently verified.*
 
-**4.3 Phase 3 --- Signing**
+**Phase 3 --- Signing**
 
 Any board member whose card is enrolled in the treasury can sign. The first three to sign complete the threshold.
 
@@ -355,11 +371,11 @@ Any board member whose card is enrolled in the treasury can sign. The first thre
 
 - The SPV node monitors for block inclusion and notifies each card when the transaction is confirmed.
 
-**4.4 Phase 4 --- Receiving funds**
+**Phase 4 --- Receiving funds**
 
 Any device holder can generate a receiving address for the treasury at any time without entering a PIN and without a network connection. The treasury address is derived from the descriptor stored on the SD card. No private key is involved in address generation.
 
-**Step 4.1 --- Generate a receiving address**
+**Step 1 --- Generate a receiving address**
 
 - Device holder opens the treasury and selects Receive. No PIN is required for this step.
 
@@ -371,7 +387,7 @@ Any device holder can generate a receiving address for the treasury at any time 
 
 > *Each device holds its own independent address counter. Two devices may show different indices when Receive is opened. This is correct behaviour. All derived addresses belong to the same treasury and any Bitcoin sent to any of them is spendable by k-of-N signatures. There is no wrong address --- only unused and used ones.*
 
-**Step 4.2 --- Checking whether a payment has arrived**
+**Step 2 --- Checking whether a payment has arrived**
 
 Payment status is checked automatically each time the device connects to Wi-Fi. No separate action is required. The SPV sync that runs at the start of every session also checks for new incoming transactions at the treasury address and updates the UTXO cache and displayed balance.
 
@@ -383,7 +399,7 @@ Payment status is checked automatically each time the device connects to Wi-Fi. 
 
 - The device displays a QR code for mempool.space/tx/\[txid\]. The holder scans it with their phone to view the full transaction on the blockchain explorer and confirm it is progressing toward the required number of confirmations.
 
-**Step 4.3 --- Offline balance check**
+**Step 3 --- Offline balance check**
 
 If the device holder opens the treasury without a Wi-Fi connection, the home screen shows the last known balance from the UTXO cache with a timestamp indicating when the cache was last updated. The balance is clearly labelled as offline. The holder knows it may be stale and how stale it is. No misleading live balance is shown when the device is not connected.
 
@@ -596,4 +612,4 @@ Four of the six questions have been answered by the Wesatoshis development team 
 
 > **OPEN.** ESCALATED TO REQUIRED. An independent security audit of the firmware is non-negotiable before public release. The side-channel and physical attack risks documented in section 6.0, combined with the treasury use case, make a pre-release audit a baseline requirement rather than an optional enhancement. The audit scope must cover at minimum: the PBKDF2 seed encryption implementation, the PSBT signing path and RAM zeroing, the NIP-44 encryption implementation, and the firmware hash verification logic. The audit report must be published alongside the v1.0 release. Wesatoshis leadership must confirm the audit firm and timeline before the v1.0 release date is set.
 
-*End of specification --- Version 0.3 Draft*
+*End of specification --- Version 0.9 Draft*
