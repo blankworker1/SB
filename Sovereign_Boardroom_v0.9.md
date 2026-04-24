@@ -1,12 +1,10 @@
-**WESATOSHIS LABS**
-
 **Sovereign Boardroom**
 
 Firmware Module Specification
 
 *k-of-N Geographically Distributed Multi-Signature Treasury*
 
-Version: 0.3 Draft
+Version: 0.8 Draft
 
 Classification: Confidential --- Internal Technical
 
@@ -129,8 +127,11 @@ The SD card is formatted FAT32 and contains the following directory structure. N
 > Transaction IDs of all broadcast transactions. Used for replay protection. Append-only.
 
 /session/broadcast_log.json is the last file listed in section 3.1. Two new files are added here.
+
 /session/utxo_cache.json stores the current set of unspent transaction outputs at the treasury address, updated each session during the SPV sync. Used to compute the displayed balance and to detect new incoming transactions. If absent the device performs a full scan from genesis on next connection.
+
 /treasury/address_index.json stores a single integer --- the index of the next unused receiving address in the treasury\'s derivation sequence. Starts at 0. Increments each time the Receive screen is opened and a new address is displayed. Never decremented. Each device holds its own independent counter. Two devices may display different indices --- this is correct and expected. All derived addresses are valid receiving addresses for the treasury regardless of which device generated them.
+
 Remove the SD card and the hardware device is blank. All treasury state is on the card. The card without the PIN is useless. The PIN without the card is useless.
 
 **3.2 Session lifecycle**
