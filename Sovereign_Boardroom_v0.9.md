@@ -2,7 +2,7 @@
 
 Firmware Module Specification
 
-*k-of-N Geographically Distributed Multi-Signature Treasury*
+*k-of-N Geographically Distributed Multi-Signature Treasury Interface*
 
 Version: 0.9 Draft
 
