@@ -194,7 +194,7 @@ The Sovereign Boardroom firmware is published on GitHub under an open-source lic
 | Key Manager (existing) | Holds the card\'s BIP-32 HD seed in the secure element. Provides signing operations. Never exports private key material. |
 | UI Layer               | Card screen and input handling. Renders treasury-specific flows: Setup, Pending, Sign, Broadcast.                        |
 
-**3.2 Communication model**
+**3.7 Communication model**
 
 All inter-card coordination is asynchronous and relay-mediated. Cards do not communicate directly with each other. The Nostr relay acts as an encrypted shared inbox.
 
@@ -208,7 +208,7 @@ All inter-card coordination is asynchronous and relay-mediated. Cards do not com
 
 - Two relay endpoints are required at minimum. If the primary is unreachable, the card falls back automatically.
 
-**3.3 Bitcoin standards compliance**
+**3.8 Bitcoin standards compliance**
 
 |              |                                                                       |
 |--------------|-----------------------------------------------------------------------|
@@ -223,7 +223,7 @@ All inter-card coordination is asynchronous and relay-mediated. Cards do not com
 
 **4. Core workflows**
 
-**4.1 Phase 1 --- Treasury setup (one-time)**
+**Phase 1 --- Treasury setup (one-time)**
 
 This phase is completed once, when the treasury is first created. It is repeated only when the treasury structure changes --- a new keyholder, a different threshold, or a deliberate migration to a new address. All N device holders should be present or reachable before the ceremony begins.
 
@@ -286,26 +286,33 @@ After the address ceremony is complete, the device displays a mandatory reminder
 >
 > **Before depositing funds:**
 >
-> 1\. Copy this SD card to a second card
+> 1. Copy this SD card to a second card
 >
-> 2\. Store backup in a separate location
+> 2. Store backup in a separate location
 >
-> 3\. Never store card and PIN together
+> 3. Never store card and PIN together
 
 The backup is made using Win32DiskImager, the same free tool used to write the original firmware image. The process creates a sector-level clone --- a bit-for-bit identical copy of the card including the encrypted key share. The clone is protected by the same PIN as the original. An attacker who obtains the backup card without the PIN cannot decrypt the seed. The backup does not create a new key share or a new participant in the treasury. It is the same key share on a second physical card, held in a separate location.
 
-The device requires the holder to tap a confirmation button labelled "The cloning process must be followed in the exact sequence below. It is designed so that the original card is never in the laptop at the same time the Write function is active. Deviating from this sequence risks overwriting the original card irreversibly.
-Step 4.1 --- Read: Insert the original card into the laptop using a microSD USB adapter. Open Win32DiskImager. In the Device dropdown, verify the drive letter matches the SD card --- not any other drive. Select Read. Save the image file to the desktop as my_treasury_backup.img. Wait for completion. Click Exit.
-Step 4.2 --- Remove the original card immediately after the Read completes. Take it out of the laptop before opening Win32DiskImager again. Hold it in your hand. The original card must not be in the laptop during the Write step. This is the most important step in the process.
-Step 4.3 --- Write: Insert a blank backup microSD card. Open Win32DiskImager. In the Device dropdown, verify the drive letter matches the blank card. Select my_treasury_backup.img as the image file. Click Write. Win32DiskImager will warn that all data on the selected drive will be overwritten --- confirm only after verifying the drive letter is correct and the original card is not in the laptop.
-Step 4.4 --- Verify the backup card. Remove the backup card. Insert it into the Sovereign Boardroom device, apply power, and enter the PIN. The treasury should load correctly and show the treasury address. If it does not load, repeat from Step 4.1 with the original card.
-Step 4.5 --- Delete the image file. Delete my_treasury_backup.img from the laptop. This file contains the encrypted seed and must not be kept, backed up to cloud storage, emailed, or shared. The firmware image downloaded from the Sovereign Boardroom website is public and may be kept. The image file created in Step 4.1 is private and must be deleted immediately after the backup card is verified.
-Step 4.6 --- Store the backup card in a separate location. The backup card must be stored separately from the original card and from the device. A fireproof safe at a different address, a safety deposit box, or any secure location the holder controls. Never store the backup card with the PIN written on or near it.
+The cloning process must be followed in the exact sequence below. It is designed so that the original card is never in the laptop at the same time the Write function is active. Deviating from this sequence risks overwriting the original card irreversibly.
+
+**Step 4.1** --- Read: Insert the original card into the laptop using a microSD USB adapter. Open Win32DiskImager. In the Device dropdown, verify the drive letter matches the SD card --- not any other drive. Select Read. Save the image file to the desktop as my_treasury_backup.img. Wait for completion. Click Exit.
+
+**Step 4.2** --- Remove the original card immediately after the Read completes. Take it out of the laptop before opening Win32DiskImager again. Hold it in your hand. The original card must not be in the laptop during the Write step. This is the most important step in the process.
+
+**Step 4.3** --- Write: Insert a blank backup microSD card. Open Win32DiskImager. In the Device dropdown, verify the drive letter matches the blank card. Select my_treasury_backup.img as the image file. Click Write. Win32DiskImager will warn that all data on the selected drive will be overwritten --- confirm only after verifying the drive letter is correct and the original card is not in the laptop.
+
+**Step 4.4** --- Verify the backup card. Remove the backup card. Insert it into the Sovereign Boardroom device, apply power, and enter the PIN. The treasury should load correctly and show the treasury address. If it does not load, repeat from Step 4.1 with the original card.
+
+**Step 4.5** --- Delete the image file. Delete my_treasury_backup.img from the laptop. This file contains the encrypted seed and must not be kept, backed up to cloud storage, emailed, or shared. The firmware image downloaded from the Sovereign Boardroom website is public and may be kept. The image file created in Step 4.1 is private and must be deleted immediately after the backup card is verified.
+
+**Step 4.6** --- Store the backup card in a separate location. The backup card must be stored separately from the original card and from the device. A fireproof safe at a different address, a safety deposit box, or any secure location the holder controls. Never store the backup card with the PIN written on or near it.
+
 The device requires the holder to tap a confirmation button labelled "I have made a backup" before the treasury is marked active. This is the final gate before the treasury address can receive funds. The firmware cannot verify that a backup was made --- this is the holder's personal commitment. No funds should be deposited until every device holder has completed this step.
 
 > *Loss of a key share without a backup does not necessarily mean loss of treasury funds. If the remaining N-1 holders can still form a quorum of k signatures, they can move funds to a new treasury address. The correct response to a lost card with no backup is: form a quorum, move the funds, conduct a new setup ceremony with a replacement device holder. This is why choosing a k threshold that leaves headroom --- 3-of-5 rather than 5-of-5 --- is a resilience decision as much as a governance one.*
 
-**4.2 Phase 2 --- Transaction proposal**
+**Phase 2 --- Transaction proposal**
 
 Any device holder may propose a transaction at any time. The firmware assigns no designated proposer. Which device holder initiates a given transaction is an out-of-device decision made by the organisation.
 
@@ -325,7 +332,7 @@ Any device holder may propose a transaction at any time. The firmware assigns no
 
 > *The device holder who initiates the transaction should communicate the details to the other N-1 holders via a separate human channel (Nostr group message, voice call) before others sign. The firmware cannot enforce this policy. It is the shared responsibility of all N device holders to verify transaction details out-of-band before signing. No device holder should sign a transaction they were not expecting or have not independently verified.*
 
-**4.3 Phase 3 --- Signing**
+**Phase 3 --- Signing**
 
 Any board member whose card is enrolled in the treasury can sign. The first three to sign complete the threshold.
 
